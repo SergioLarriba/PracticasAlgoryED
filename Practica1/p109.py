@@ -7,7 +7,6 @@ def matrix_multiplication (m_1: np.ndarray, m_2: np.ndarray)-> np.ndarray:
     Devuelve la matriz multiplicada.
     
     Args: 
-
         m_1 (np.ndarray): una matriz para multiplicar.
         
         m_2 (np.ndarray): una matriz para multiplicar. 
@@ -26,7 +25,6 @@ def rec_bb(t: list, f: int, l: int, key: int)-> int:
     y dependiendo de lo que sea, volvemos a dividir y ejecutar el mismo proceso con la mitad superior o inferior de la tabla.
     
     Args: 
-
         t (list): la lista en la que queremos buscar el elemento.
         
         f (int): el indice del primer elemento de la tabla. 
@@ -36,7 +34,6 @@ def rec_bb(t: list, f: int, l: int, key: int)-> int:
         key (int): el elemento que queremos buscar
     
     Returns: 
-
         p (int): la posicion del elemento que queremos buscar
         
     """ 
@@ -60,7 +57,6 @@ def bb(t: list, f: int, l: int, key: int)-> int:
     y dependiendo de lo que sea, volvemos a dividir y ejecutar el mismo proceso con la mitad superior o inferior de la tabla.
     
     Args: 
-
         t (list): la lista en la que queremos buscar el elemento.
         
         f (int): el indice del primer elemento de la tabla. 
@@ -70,11 +66,10 @@ def bb(t: list, f: int, l: int, key: int)-> int:
         key (int): el elemento que queremos buscar
     
     Returns: 
-
         p (int): la posicion del elemento que queremos buscar
         
     """ 
-    while f < l:
+    while f <= l:
 
         mid = (f + l) // 2
 
@@ -91,7 +86,6 @@ def min_heapify(h: np.ndarray, i: int):
     Modifica el heap de tal forma que el elemento de la posicion i, sus hijos sean menores que él.
     
     Args: 
-
         h (np.ndarray): un heap.
         
         i (int): la posicion del elemento el cual se quiere hacer heapify. 
@@ -116,26 +110,16 @@ def insert_min_heap(h: np.ndarray, k: int) -> np.ndarray:
     Inserta un nuevo nodo en un min heap existente.
     
     Args: 
-
         h (np.ndarray): el min heap.
         
         k (int): el nuevo nodo/valor a insertar. 
     
     Returns: 
-
         h (np.ndarray): el min heap con el nodo insertado.
         
     """ 
-
-    if h == None: 
-        h == []
-    
-    h += [k]
-    j = len(h) - 1
-    
-    while j>=1 and h[(j-1)//2] > h[j]:
-        h[(j-1)//2], h[j] = h[j], h[(j-1)//2]
-        j = (j-1)//2
+    h = np.append(h, k)
+    create_min_heap(h)
     
     return h
 
@@ -145,7 +129,6 @@ def create_min_heap (h:np.ndarray):
     Crea un min heap sobre el array que le es pasado por argumento.
     
     Args: 
-
         h (np.ndarray): un array de Numpy.
         
     """ 
@@ -163,7 +146,6 @@ def pq_ini():
     """Inicializa una cola de prioridad. 
     
     Returns: 
-
         pq (lista): la cola de prioridad vacia.
         
     """ 
@@ -176,33 +158,26 @@ def pq_insert (h: np.ndarray, k:int)-> np.ndarray:
     Inserta un nuevo nodo en un min heap existente.
     
     Args: 
-
         h (np.ndarray): la cola de prioridad en la que hay que insertar el valor.
         
         k (int): el nuevo nodo/valor a insertar. 
     
     Returns: 
-
         h (np.ndarray): la lista con el nuevo nodo insertado.
         
     """ 
     
-    if len(h)==0: 
-        return None
-    
     return insert_min_heap (h, k)
 
-def pq_remove(h: np.ndarray)-> tuple[int, np.ndarray]: 
+def pq_remove(h: np.ndarray)-> [int, np.ndarray]: 
     """Extrae la raiz.
     
     Elimina la raiz, la reemplaza por el ultimo nodo y comprueba si sigue siendo un min heap.
     
     Args: 
-
         h (np.ndarray): la cola de prioridad en la que hay que extraer la raiz.
     
     Returns: 
-
         tuple[int, np.ndarray]: la cola de prioridad sin la raiz original y el valor extraido
         
     """ 
@@ -211,6 +186,7 @@ def pq_remove(h: np.ndarray)-> tuple[int, np.ndarray]:
     
     k = h[0]
     h[0] = h[-1]
+    h = np.delete(h, -1)
     min_heapify (h, 0)
     
     return (k, h)
@@ -219,24 +195,28 @@ def select_min_heap(h: np.ndarray, k: int)-> int:
     """Retorna el valor que ocuparia la posicion k en un array ordenado.
     
     Args: 
-
         h (np.ndarray): el min heap.
         
         k (int): la posicion que ocuparia
     
     Returns: 
-
-        p (int): el elemento que ocuparia la posicion k en un array ordenado
+        j (int): el elemento que ocuparia la posicion k en un array ordenado
         
     """ 
-    h_aux = []
-    
-    for i in range (0, k) : 
-      insert_min_heap (h_aux, -h[i])
 
-    for i in range (0, len(h)) : 
-      if -h[i] > h_aux[0] : 
-        h_aux = pq_remove (h_aux)[1]
-        h_aux = insert_min_heap(h_aux, -h[i])
-    
-    return -h_aux[0]
+    h_aux = np.array([])
+    h_aux = list(map(lambda n: -n, h))
+
+    first_k_elem = h_aux[:k]
+
+    create_min_heap (first_k_elem)
+
+    for i in h_aux[k:]: 
+        if i>first_k_elem[0]: 
+            first_k_elem[0]=i
+            min_heapify (first_k_elem, 0)
+    return -first_k_elem[0]
+
+
+
+
